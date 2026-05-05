@@ -1,1 +1,2 @@
 # Battleship
+A simple implementation of the classic Battleship game in C#. The game allows two players to take turns guessing the locations of each other's ships on a grid. The first player to sink all of the opponent's ships wins the game.
