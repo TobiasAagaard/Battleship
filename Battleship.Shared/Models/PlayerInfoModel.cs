@@ -1,4 +1,4 @@
-namespace Battleship_Libary.Models;
+namespace Battleship_Shared.Models;
 
 public class PlayerInfoModel
 {
