@@ -28,6 +28,8 @@ public class GameView
 
         foreach (var gridSpot in activePlayer.ShotGrid)
         {
+            
+
             if (gridSpot.SpotLetter != currentRow)
             {
                 Console.WriteLine();

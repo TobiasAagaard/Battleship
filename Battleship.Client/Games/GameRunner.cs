@@ -2,7 +2,7 @@ using Battleship_Client.Views;
 using Battleship_Shared;
 using Battleship_Shared.Models;
 
-namespace Battleship_Client.Game;
+namespace Battleship_Client.Games;
 
 public class GameRunner
 {
@@ -10,9 +10,9 @@ public class GameRunner
     {
         GameView.WelcomeMessage();
 
-        Player activePlayer = CreatePlayer("Player 1");
-        Player opponent = CreatePlayer("Player 2");
-        Player? winner = null;
+        HumanPlayer activePlayer = (HumanPlayer)CreatePlayer("Player 1");
+        HumanPlayer opponent = (HumanPlayer)CreatePlayer("Player 2");
+        HumanPlayer? winner = null;
 
         do
         {
@@ -40,7 +40,7 @@ public class GameRunner
 
     private static Player CreatePlayer(string playerTitle)
     {
-        Player output = new Player();
+        Player output = new HumanPlayer();
 
         GameView.ShowPlayerInfoHeader(playerTitle);
 
