@@ -1,6 +1,6 @@
-using Battleship_Client.Menus;
+using Battleship.Client.Menus;
 
-namespace BattleshipLite
+namespace Battleship.Client
 {
     class Program
     {

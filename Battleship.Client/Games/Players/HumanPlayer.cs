@@ -1,7 +1,7 @@
-using Battleship_Client.Views;
-using Battleship_Shared.Models;
+using Battleship.Client.Views;
+using Battleship.Shared.Models;
 
-namespace Battleship_Client.Games;
+namespace Battleship.Client.Games;
 
 public class HumanPlayer : Player
 {

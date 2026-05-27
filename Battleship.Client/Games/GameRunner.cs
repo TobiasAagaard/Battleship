@@ -1,8 +1,7 @@
-using Battleship_Client.Views;
-using Battleship_Shared;
-using Battleship_Shared.Models;
+using Battleship.Client.Views;
+using Battleship.Shared.Models;
 
-namespace Battleship_Client.Games;
+namespace Battleship.Client.Games;
 
 public class GameRunner
 {
@@ -10,86 +9,76 @@ public class GameRunner
     {
         GameView.WelcomeMessage();
 
-        HumanPlayer activePlayer = (HumanPlayer)CreatePlayer("Player 1");
-        HumanPlayer opponent = (HumanPlayer)CreatePlayer("Player 2");
-        HumanPlayer? winner = null;
+        Player active = CreatePlayer("Player 1");
+        Player opponent = CreatePlayer("Player 2");
+        Player? winner = null;
 
         do
         {
-            GameView.DisplayShotGrid(activePlayer);
+            GameView.DisplayShotBoard(active);
 
-            RecordPlayerShot(activePlayer, opponent);
+            TakeTurn(active, opponent);
 
-            bool doesGameContinue = GameLogic.PlayerStillActive(opponent);
-
-            if (doesGameContinue == true)
-            {
-                (activePlayer, opponent) = (opponent, activePlayer);
-            }
+            if (!opponent.IsAlive)
+                winner = active;
             else
-            {
-                winner = activePlayer;
-            }
+                (active, opponent) = (opponent, active);
 
-        } while (winner == null);
+        } while (winner is null);
 
         GameView.IdentifyWinner(winner);
-
         Console.ReadLine();
     }
 
-    private static Player CreatePlayer(string playerTitle)
+    private static Player CreatePlayer(string title)
     {
-        Player output = new HumanPlayer();
-
-        GameView.ShowPlayerInfoHeader(playerTitle);
-
-        output.UsersName = GameView.AskForUsersName();
-
-        GameLogic.InitializeGrid(output);
-
-        PlaceShips(output);
-
+        Player player = new HumanPlayer();
+        GameView.ShowPlayerInfoHeader(title);
+        player.UsersName = GameView.AskForUsersName();
+        PlaceShips(player);
         Console.Clear();
-
-        return output;
+        return player;
     }
 
-    private static void PlaceShips(Player model)
+    private static void PlaceShips(Player player)
     {
-        do
+        while (player.FleetBoard.ShipLocations.Count < 5)
         {
-            string location = GameView.AskForShipLocation(model.ShipLocations.Count + 1);
+            string input = player.GetShipPlacement(player.FleetBoard.ShipLocations.Count + 1);
+            bool placed  = player.FleetBoard.TryPlaceShip(input);
 
-            bool isValidLocation = GameLogic.PlaceShip(model, location);
-
-            if (isValidLocation == false)
-            {
+            if (!placed)
                 GameView.ShowInvalidLocationMessage();
-            }
-        } while (model.ShipLocations.Count < 5);
+        }
     }
 
-    private static void RecordPlayerShot(Player activePlayer, Player opponent)
+    private static void TakeTurn(Player active, Player opponent)
     {
-        bool isValidShot = false;
-        string row = "";
-        int column = 0;
+        string letter = "";
+        int    number = 0;
 
-        do
+        bool validShot = false;
+        while (!validShot)
         {
-            string shot = GameView.AskForShot();
-            (row, column) = GameLogic.SplitShotIntoRowAndColumn(shot);
-            isValidShot = GameLogic.ValidateShot(activePlayer, row, column);
+            string shot = active.GetNextShot();
 
-            if (isValidShot == false)
+            if (!Board.TryParseLocation(shot, out letter, out number))
             {
                 GameView.ShowInvalidShotMessage();
+                continue;
             }
-        } while (isValidShot == false);
 
-        bool isAHit = GameLogic.IdentifyShotResult(opponent, row, column);
+            if (!active.ShotBoard.IsShotValid(letter, number))
+            {
+                GameView.ShowInvalidShotMessage();
+                continue;
+            }
 
-        GameLogic.MarkShotResult(activePlayer, row, column, isAHit);
+            validShot = true;
+        }
+
+        bool isHit = opponent.FleetBoard.IsHitOnFleet(letter, number);
+
+        active.ShotBoard.RecordShot(letter, number, isHit);
     }
 }

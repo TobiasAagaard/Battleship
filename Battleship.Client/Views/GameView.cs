@@ -1,9 +1,8 @@
-using Battleship_Shared;
-using Battleship_Shared.Models;
+using Battleship.Shared.Models;
 
-namespace Battleship_Client.Views;
+namespace Battleship.Client.Views;
 
-public class GameView
+public static class GameView
 {
     public static void WelcomeMessage()
     {
@@ -12,92 +11,74 @@ public class GameView
         Console.WriteLine();
     }
 
-    public static void DisplayShotGrid(Player activePlayer)
+    public static void DisplayShotBoard(Player player)
     {
         Console.Clear();
-        Console.WriteLine($"{ activePlayer.UsersName }'s Shot Grid");
+        Console.WriteLine($"{player.UsersName}'s Shot Grid");
         Console.WriteLine();
+        Render(player.ShotBoard.ShotGrid);
+        Console.WriteLine();
+    }
 
-        if (activePlayer.ShotGrid == null || activePlayer.ShotGrid.Count == 0)
+    public static void Render(IReadOnlyList<GridSpot> spots)
+    {
+        if (!spots.Any()) { Console.WriteLine("No grid to display."); return; }
+
+        var letters = spots.Select(s => s.Letter).Distinct().OrderBy(l => l).ToList();
+        var numbers = spots.Select(s => s.Number).Distinct().OrderBy(n => n).ToList();
+
+        foreach (var letter in letters)
         {
-            Console.WriteLine("No grid to display.");
-            return;
+            Console.Write(letter + "  ");
+            foreach (var number in numbers)
+            {
+                var spot = spots.First(s => s.Matches(letter, number));
+                Console.Write(SymbolFor(spot) + "  ");
+            }
+            Console.WriteLine();
         }
-
-        string currentRow = activePlayer.ShotGrid[0].SpotLetter;
-
-        foreach (var gridSpot in activePlayer.ShotGrid)
+        Console.WriteLine();
+        Console.Write("   ");
+        foreach (var number in numbers)
         {
-            
-
-            if (gridSpot.SpotLetter != currentRow)
-            {
-                Console.WriteLine();
-                currentRow = gridSpot.SpotLetter;
-            }
-
-            if (gridSpot.Status == GridSpotStatus.Empty)
-            {
-                Console.Write($" { gridSpot.SpotLetter }{ gridSpot.SpotNumber } ");
-            }
-            else if (gridSpot.Status == GridSpotStatus.Hit)
-            {
-                Console.Write(" X ");
-            }
-            else if (gridSpot.Status == GridSpotStatus.Miss)
-            {
-                Console.Write(" O ");
-            }
-            else
-            {
-                Console.Write(" ? ");
-            }
+            Console.Write($" {number}   ");
         }
         Console.WriteLine();
     }
 
+    private static string SymbolFor(GridSpot spot) => spot.Status switch
+    {
+        GridSpot.GridSpotStatus.Hit  => " X ",
+        GridSpot.GridSpotStatus.Miss => " o ",
+        GridSpot.GridSpotStatus.Sunk => " # ",
+        _                            => "---",
+    };
+
     public static void IdentifyWinner(Player winner)
     {
-        Console.WriteLine($"Congratulations to { winner.UsersName } for winning!");
-        Console.WriteLine($"{ winner.UsersName } took { GameLogic.GetShotCount(winner) } shots.");
+        Console.WriteLine($"Congratulations to {winner.UsersName} for winning!");
+        Console.WriteLine($"{winner.UsersName} took {winner.ShotBoard.ShotCount} shots.");
     }
 
     public static string AskForShot()
     {
         Console.Write("Please enter your shot selection: ");
-        string? output = Console.ReadLine();
-
-        return output ?? "";
+        return Console.ReadLine() ?? "";
     }
 
     public static string AskForUsersName()
     {
         Console.Write("What is your name: ");
-        string? output = Console.ReadLine();
-
-        return output ?? "";
+        return Console.ReadLine() ?? "";
     }
 
     public static string AskForShipLocation(int shipNumber)
     {
-        Console.Write($"Where do you want to place ship number { shipNumber }: ");
-        string? location = Console.ReadLine();
-
-        return location ?? "";
+        Console.Write($"Where do you want to place ship number {shipNumber}: ");
+        return Console.ReadLine() ?? "";
     }
 
-    public static void ShowPlayerInfoHeader(string playerTitle)
-    {
-        Console.WriteLine($"Player information for { playerTitle }");
-    }
-
-    public static void ShowInvalidShotMessage()
-    {
-        Console.WriteLine("Invalid Shot Location. Please try again.");
-    }
-
-    public static void ShowInvalidLocationMessage()
-    {
-        Console.WriteLine("That was not a valid location. Please try again.");
-    }
+    public static void ShowPlayerInfoHeader(string title) => Console.WriteLine($"Player information for {title}");
+    public static void ShowInvalidShotMessage()     => Console.WriteLine("Invalid shot. Please try again.");
+    public static void ShowInvalidLocationMessage() => Console.WriteLine("Invalid location. Please try again.");
 }

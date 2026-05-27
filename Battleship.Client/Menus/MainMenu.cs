@@ -1,5 +1,6 @@
-using Battleship_Client.Games;
-namespace Battleship_Client.Menus;
+using Battleship.Client.Games;
+
+namespace Battleship.Client.Menus;
 
 public class MainMenu
 {

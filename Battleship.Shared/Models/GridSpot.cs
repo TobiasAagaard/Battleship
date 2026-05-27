@@ -1,10 +1,36 @@
 
-namespace Battleship_Shared.Models
+namespace Battleship.Shared.Models
 {
-    public class GridSpotModel
+    public class GridSpot
     {
-        public string SpotLetter { get; set; } = string.Empty;
-        public int SpotNumber { get; set; }
+        public string Letter { get; set; } = string.Empty;
+        public int Number { get; set; }
         public GridSpotStatus Status { get; set; } = GridSpotStatus.Empty;
+        public bool IsAvailable => Status == GridSpotStatus.Empty;
+        public bool IsShip => Status == GridSpotStatus.Ship;
+        public enum GridSpotStatus
+        {
+            Empty,
+            Ship,
+            Miss,
+            Hit,
+            Sunk
+        }  
+
+        public GridSpot(string letter, int number)
+        {
+            Letter = letter.ToUpper();
+            Number = number;
+            Status = GridSpotStatus.Empty;
+        }
+
+        public bool Matches(string letter, int number) => Letter.Equals(letter.ToUpper()) && Number == number;
+
+        public void PlaceShip() => Status = GridSpotStatus.Ship;
+        public void MarkHit() => Status = GridSpotStatus.Hit;
+        public void MarkMiss() => Status = GridSpotStatus.Miss;
+
+
     }
 }
+
