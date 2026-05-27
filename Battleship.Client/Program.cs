@@ -1,5 +1,5 @@
 ﻿using Battleship_Client.Views;
-using Battleship_Shared.Models;
+using Battleship_Shared;
 
 namespace Battleship_Client;
 

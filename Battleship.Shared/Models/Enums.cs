@@ -1,4 +1,4 @@
-namespace Battleship_Shared.Models;
+namespace Battleship_Shared;
 
  public enum GridSpotStatus
     {

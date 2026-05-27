@@ -1,6 +1,6 @@
-namespace Battleship_Shared.Models;
+namespace Battleship_Shared;
 
-public class GridSpotModel
+public class GridSpot
 {
     public string SpotLetter { get; set; } = string.Empty;
     public int SpotNumber { get; set; }
