@@ -1,6 +1,7 @@
-namespace Battleship_Shared;
 
- public enum GridSpotStatus
+namespace Battleship_Shared.Models
+{
+    public enum GridSpotStatus
     {
         Empty,
         Ship,
@@ -8,24 +9,4 @@ namespace Battleship_Shared;
         Hit,
         Sunk
     }
-
-public enum ShipType
-{
-    Battleship,
-    Submarine,
-    Destroyer,
-}
-
-public enum Orientation
-{
-    Horizontal,
-    Vertical
-}
-
-public enum GameStatus
-{
-    WaitingForPLayer,
-    InProgress,
-    Player1Won,
-    Player2Won
 }

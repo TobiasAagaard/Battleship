@@ -1,9 +1,10 @@
-namespace Battleship_Shared;
 
-public class Player
+namespace Battleship_Shared.Models
 {
-    public string Name { get; set; } = string.Empty;
-    public List<GridSpot> ShipLocations { get; set; } = new();
-    public List<GridSpot> ShotGrid { get; set; } = new();
-
+    public class Player
+    {
+        public string UsersName { get; set; } = string.Empty;
+        public List<GridSpotModel> ShipLocations { get; set; } = new List<GridSpotModel>();
+        public List<GridSpotModel> ShotGrid { get; set; } = new List<GridSpotModel>();
+    }
 }
