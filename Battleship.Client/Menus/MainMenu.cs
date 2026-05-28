@@ -1,6 +1,5 @@
 using Battleship.Client.Games;
 using Battleship.Client.Views;
-using Battleship.Shared.Models;
 
 namespace Battleship.Client.Menus;
 

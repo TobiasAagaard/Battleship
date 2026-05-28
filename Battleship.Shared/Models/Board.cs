@@ -3,8 +3,8 @@ namespace Battleship.Shared.Models;
 public class Board
 {
     private readonly Dictionary<(string, int), GridSpot> shotGrid = new();
-    private readonly List<GridSpot> shipLocations = new();
     public IReadOnlyDictionary<(string, int), GridSpot> ShotGrid => shotGrid;
+    private readonly List<GridSpot> shipLocations = new();
     public IReadOnlyList<GridSpot> ShipLocations => shipLocations;
     public int ShotCount => shotGrid.Values.Count(s => !s.IsAvailable);
 

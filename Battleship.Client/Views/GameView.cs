@@ -22,20 +22,31 @@ public static class GameView
 
     public static void Render(IEnumerable<GridSpot> spots)
     {
-        if (spots.Any() == false) 
+        List<GridSpot> cachedSpots = spots.ToList();
+
+        if (cachedSpots.Any() == false) 
         { 
             Console.WriteLine("No grid to display."); return; 
         }
 
-        List<string> letters = spots.Select(spot => spot.Letter).Distinct().OrderBy(l => l).ToList();
-        List<int> numbers = spots.Select(spot => spot.Number).Distinct().OrderBy(n => n).ToList();
+        HashSet<string> uniqueLetters = new();
+        HashSet<int> uniqueNumbers = new();
+
+        foreach (GridSpot spot in cachedSpots)
+        {
+            uniqueLetters.Add(spot.Letter);
+            uniqueNumbers.Add(spot.Number);
+        }
+
+        List<string> letters = uniqueLetters.OrderBy(l => l).ToList();
+        List<int> numbers = uniqueNumbers.OrderBy(n => n).ToList();
 
         foreach (string letter in letters)
         {
             Console.Write(letter + "  ");
             foreach (int number in numbers)
             {
-                GridSpot spot = spots.First(spot => spot.Matches(letter, number));
+                GridSpot spot = cachedSpots.First(spot => spot.Matches(letter, number));
                 Console.Write(SymbolForGridSpot(spot) + "  ");
             }
             Console.WriteLine();

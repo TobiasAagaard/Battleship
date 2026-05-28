@@ -50,11 +50,17 @@ public class BoardLogic
     public void RecordShot(Board board, string letter, int number, bool isHit)
     {
         if (!board.ShotGrid.TryGetValue((letter, number), out GridSpot? spot))
+        {
             return;
+        }
 
         if (isHit)
+        {
             spot.MarkHit();
+        }
         else
+        {
             spot.MarkMiss();
+        }
     }
 }

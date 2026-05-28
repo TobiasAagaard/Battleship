@@ -12,10 +12,9 @@ public class GameRunner
         Player opponent = CreatePlayer("Player 2");
         Player? winner = null;
 
-        do
+        while (winner == null)
         {
             GameView.DisplayShotBoard(active);
-
             TakeTurn(active, opponent);
 
             if (!opponent.IsAlive)
@@ -24,9 +23,8 @@ public class GameRunner
             }
             else
                 (active, opponent) = (opponent, active);
-
-        } while (winner is null);
-
+        }
+        
         GameView.IdentifyWinner(winner);
         Console.ReadLine();
     }
@@ -34,10 +32,15 @@ public class GameRunner
     private static Player CreatePlayer(string title)
     {
         Player player = new HumanPlayer();
+
         GameView.ShowPlayerInfoHeader(title);
+
         player.UsersName = GameView.AskForUsersName();
+
         PlaceShips(player);
+
         Console.Clear();
+
         return player;
     }
 
@@ -49,8 +52,10 @@ public class GameRunner
             BoardLogic logic = new();
             bool placed  = logic.TryPlaceShip(player.FleetBoard, input);
 
-            if (!placed)
+            if (placed == false) 
+            {
                 GameView.ShowInvalidLocationMessage();
+            }
         }
     }
 
