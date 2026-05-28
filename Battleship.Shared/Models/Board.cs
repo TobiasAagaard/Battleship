@@ -2,28 +2,28 @@ namespace Battleship.Shared.Models;
 
 public class Board
 {
-    private readonly Dictionary<(string, int), GridSpot> _shotGrid = new();
-    private readonly List<GridSpot> _shipLocations = new();
-    public IReadOnlyList<GridSpot> ShotGrid => _shotGrid.Values.ToList();
-    public IReadOnlyList<GridSpot> ShipLocations => _shipLocations;
-    public int ShotCount => _shotGrid.Values.Count(s => !s.IsAvailable);
+    private readonly Dictionary<(string, int), GridSpot> shotGrid = new();
+    private readonly List<GridSpot> shipLocations = new();
+    public IReadOnlyList<GridSpot> ShotGrid => shotGrid.Values.ToList();
+    public IReadOnlyList<GridSpot> ShipLocations => shipLocations;
+    public int ShotCount => shotGrid.Values.Count(s => !s.IsAvailable);
    
     public Board()
     {
-        string[] letters = { "A", "B", "C", "D", "E" };
-        int[]    numbers = { 1, 2, 3, 4, 5 };
+        string[] letters = { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J" };
+        int[]    numbers = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 
         foreach (var letter in letters)
         foreach (var number in numbers)
         {
             var spot = new GridSpot(letter, number);
-            _shotGrid[(letter, number)] = spot;
+            shotGrid[(letter, number)] = spot;
         }
     }
 
     public bool IsHitOnFleet(string letter, int number)
     {
-        var ship = _shipLocations.FirstOrDefault(s => s.Matches(letter, number) && s.IsShip);
+        var ship = shipLocations.FirstOrDefault(s => s.Matches(letter, number) && s.IsShip);
         if (ship is null)
             return false;
 
@@ -37,23 +37,23 @@ public class Board
             return false;
 
         
-        if (!_shotGrid.ContainsKey((letter, number)))
+        if (!shotGrid.ContainsKey((letter, number)))
             return false;
 
         
-        bool alreadyOccupied = _shipLocations.Any(s => s.Matches(letter, number));
+        bool alreadyOccupied = shipLocations.Any(s => s.Matches(letter, number));
         if (alreadyOccupied)
             return false;
 
         var spot = new GridSpot(letter, number);
         spot.PlaceShip();
-        _shipLocations.Add(spot);
+        shipLocations.Add(spot);
         return true;
     }
 
     public bool IsShotValid(string letter, int number)
     {
-        if (!_shotGrid.TryGetValue((letter, number), out GridSpot? spot))
+        if (!shotGrid.TryGetValue((letter, number), out GridSpot? spot))
             return false;
 
         return spot.IsAvailable;
@@ -61,7 +61,7 @@ public class Board
 
     public void RecordShot(string letter, int number, bool isHit)
     {
-        if (!_shotGrid.TryGetValue((letter, number), out GridSpot? spot))
+        if (!shotGrid.TryGetValue((letter, number), out GridSpot? spot))
             return;
 
         if (isHit)
