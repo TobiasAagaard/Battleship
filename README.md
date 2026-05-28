@@ -29,7 +29,7 @@ dotnet run --project Battleship.Client
 
 When the client starts you are greeted by the main menu:
 
-- `1` — Play Game Offline (hot-seat on the same machine)
+- `1` — Play Game Offline (co-op on the same device and screen)
 - `0` — Exit
 
 ## Project structure
