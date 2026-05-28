@@ -7,8 +7,6 @@ public class GameRunner
 {
     public void Run()
     {
-        GameView.WelcomeMessage();
-
         Player active = CreatePlayer("Player 1");
         Player opponent = CreatePlayer("Player 2");
         Player? winner = null;
@@ -20,7 +18,9 @@ public class GameRunner
             TakeTurn(active, opponent);
 
             if (!opponent.IsAlive)
+            {
                 winner = active;
+            }
             else
                 (active, opponent) = (opponent, active);
 

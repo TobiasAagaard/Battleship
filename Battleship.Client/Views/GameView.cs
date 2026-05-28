@@ -22,44 +22,62 @@ public static class GameView
 
     public static void Render(IReadOnlyList<GridSpot> spots)
     {
-        if (!spots.Any()) { Console.WriteLine("No grid to display."); return; }
+        if (spots.Any() == false) 
+        { 
+            Console.WriteLine("No grid to display."); return; 
+        }
 
-        var letters = spots.Select(s => s.Letter).Distinct().OrderBy(l => l).ToList();
-        var numbers = spots.Select(s => s.Number).Distinct().OrderBy(n => n).ToList();
+        List<string> letters = spots.Select(spot => spot.Letter).Distinct().OrderBy(l => l).ToList();
+        List<int> numbers = spots.Select(spot => spot.Number).Distinct().OrderBy(n => n).ToList();
 
-        foreach (var letter in letters)
+        foreach (string letter in letters)
         {
             Console.Write(letter + "  ");
-            foreach (var number in numbers)
+            foreach (int number in numbers)
             {
-                var spot = spots.First(s => s.Matches(letter, number));
-                Console.Write(SymbolFor(spot) + "  ");
+                GridSpot spot = spots.First(spot => spot.Matches(letter, number));
+                Console.Write(SymbolForGridSpot(spot) + "  ");
             }
             Console.WriteLine();
         }
-        Console.WriteLine();
-        Console.Write("   ");
-        foreach (var number in numbers)
+        Console.Write("  ");
+        foreach (int number in numbers)
         {
-            Console.Write($" {number}   ");
+            Console.Write($" {number} ");
         }
         Console.WriteLine();
     }
 
-    private static string SymbolFor(GridSpot spot) => spot.Status switch
+    private static string SymbolForGridSpot(GridSpot spot)
     {
-        GridSpot.GridSpotStatus.Hit  => " X ",
-        GridSpot.GridSpotStatus.Miss => " o ",
-        GridSpot.GridSpotStatus.Sunk => " # ",
-        _                            => "---",
-    };
+        if (GridSpot.GridSpotStatus.Hit == spot.Status)
+        {
+            return "X";
+        }
+        else if (GridSpot.GridSpotStatus.Miss == spot.Status)
+        {
+            return "O";
+        }
+        else
+        {
+            return "~";
+        }
+
+    }
 
     public static void IdentifyWinner(Player winner)
     {
+        Console.Clear();
         Console.WriteLine($"Congratulations to {winner.UsersName} for winning!");
         Console.WriteLine($"{winner.UsersName} took {winner.ShotBoard.ShotCount} shots.");
     }
 
+    public static void IdentifyLoser(Player loser)
+    {
+        Console.Clear();
+        Console.WriteLine($"Better luck next time, {loser.UsersName}.");
+        Console.WriteLine($"{loser.UsersName} took {loser.ShotBoard.ShotCount} shots.");
+    }
     public static string AskForShot()
     {
         Console.Write("Please enter your shot selection: ");

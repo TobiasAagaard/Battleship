@@ -1,4 +1,6 @@
 using Battleship.Client.Games;
+using Battleship.Client.Views;
+using Battleship.Shared.Models;
 
 namespace Battleship.Client.Menus;
 
@@ -15,8 +17,10 @@ public class MainMenu
         while (true)
         {
             Console.Clear();
-            Console.WriteLine("Main Menu");
-            Console.WriteLine();
+            
+            GameView.WelcomeMessage();
+
+            GameView.DisplayShotBoard(new Player[] { new HumanPlayer(), new HumanPlayer() }[0]);
 
             foreach (var menuItem in mainMenu)
             {
