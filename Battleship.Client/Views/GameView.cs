@@ -15,6 +15,7 @@ public static class GameView
     {
         Console.Clear();
         Console.WriteLine($"{player.UsersName}'s Shot Grid");
+        Console.WriteLine($"Number of shots taken: {player.ShotBoard.ShotCount}");
         Console.WriteLine();
         Render(player.ShotBoard.ShotGrid.Values);
         Console.WriteLine();
@@ -47,6 +48,7 @@ public static class GameView
             foreach (int number in numbers)
             {
                 GridSpot spot = cachedSpots.First(spot => spot.Matches(letter, number));
+                
                 Console.Write(SymbolForGridSpot(spot) + "  ");
             }
             Console.WriteLine();
@@ -107,7 +109,7 @@ public static class GameView
         return Console.ReadLine() ?? "";
     }
 
-    public static void ShowPlayerInfoHeader(string title) => Console.WriteLine($"Player information for {title}");
-    public static void ShowInvalidShotMessage()     => Console.WriteLine("Invalid shot. Please try again.");
+    public static void ShowPlayerInfoHeader(string title) => Console.WriteLine($"Type the player information for: {title}");
+    public static void ShowInvalidShotMessage() => Console.WriteLine("Invalid shot. Please try again.");
     public static void ShowInvalidLocationMessage() => Console.WriteLine("Invalid location. Please try again.");
 }

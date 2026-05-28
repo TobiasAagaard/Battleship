@@ -31,6 +31,8 @@ public class GameRunner
 
     private static Player CreatePlayer(string title)
     {
+        Console.Clear();
+        
         Player player = new HumanPlayer();
 
         GameView.ShowPlayerInfoHeader(title);
