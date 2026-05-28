@@ -16,11 +16,11 @@ public static class GameView
         Console.Clear();
         Console.WriteLine($"{player.UsersName}'s Shot Grid");
         Console.WriteLine();
-        Render(player.ShotBoard.ShotGrid);
+        Render(player.ShotBoard.ShotGrid.Values);
         Console.WriteLine();
     }
 
-    public static void Render(IReadOnlyList<GridSpot> spots)
+    public static void Render(IEnumerable<GridSpot> spots)
     {
         if (spots.Any() == false) 
         { 

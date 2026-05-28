@@ -20,8 +20,6 @@ public class MainMenu
             
             GameView.WelcomeMessage();
 
-            GameView.DisplayShotBoard(new Player[] { new HumanPlayer(), new HumanPlayer() }[0]);
-
             foreach (var menuItem in mainMenu)
             {
                 Console.WriteLine($"{ menuItem.Key }: { menuItem.Value.Label }");

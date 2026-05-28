@@ -1,10 +1,11 @@
 using Battleship.Client.Views;
 using Battleship.Shared.Models;
+using Battleship.Shared.Logic;
 
 namespace Battleship.Client.Games;
 
 public class GameRunner
-{
+{   
     public void Run()
     {
         Player active = CreatePlayer("Player 1");
@@ -45,7 +46,8 @@ public class GameRunner
         while (player.FleetBoard.ShipLocations.Count < 5)
         {
             string input = player.GetShipPlacement(player.FleetBoard.ShipLocations.Count + 1);
-            bool placed  = player.FleetBoard.TryPlaceShip(input);
+            BoardLogic logic = new();
+            bool placed  = logic.TryPlaceShip(player.FleetBoard, input);
 
             if (!placed)
                 GameView.ShowInvalidLocationMessage();
@@ -56,11 +58,13 @@ public class GameRunner
     {
         string letter = "";
         int    number = 0;
+        BoardLogic logic = new();
 
         bool validShot = false;
         while (!validShot)
         {
             string shot = active.GetNextShot();
+           
 
             if (!Board.TryParseLocation(shot, out letter, out number))
             {
@@ -68,7 +72,7 @@ public class GameRunner
                 continue;
             }
 
-            if (!active.ShotBoard.IsShotValid(letter, number))
+            if (!logic.IsShotValid(active.ShotBoard, letter, number))
             {
                 GameView.ShowInvalidShotMessage();
                 continue;
@@ -77,8 +81,8 @@ public class GameRunner
             validShot = true;
         }
 
-        bool isHit = opponent.FleetBoard.IsHitOnFleet(letter, number);
+        bool isHit = logic.IsHitOnFleet(opponent.FleetBoard, letter, number);
 
-        active.ShotBoard.RecordShot(letter, number, isHit);
+        logic.RecordShot(active.ShotBoard, letter, number, isHit);
     }
 }
