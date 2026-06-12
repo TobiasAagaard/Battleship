@@ -20,7 +20,7 @@ public static class GameView
         Render(player.ShotBoard.ShotGrid.Values);
         Console.WriteLine();
     }
-
+    
     public static void Render(IEnumerable<GridSpot> spots)
     {
         List<GridSpot> cachedSpots = spots.ToList();

@@ -28,6 +28,7 @@ namespace Battleship.Shared.Models
 
         public void PlaceShip() => Status = GridSpotStatus.Ship;
         public void MarkHit() => Status = GridSpotStatus.Hit;
+        public void MarkSunk() => Status = GridSpotStatus.Sunk;
         public void MarkMiss() => Status = GridSpotStatus.Miss;
 
 
