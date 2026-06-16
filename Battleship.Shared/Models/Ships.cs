@@ -15,7 +15,7 @@ public enum Orientation
     Vertical
 }
 
-public class Ship
+public class Ships
 {
     private readonly List<GridSpot> locations = new();
     public IReadOnlyList<GridSpot> Locations => locations;
@@ -24,7 +24,7 @@ public class Ship
 
     public bool IsSunk => Locations.All( s => s.Status == GridSpot.GridSpotStatus.Hit || s.Status == GridSpot.GridSpotStatus.Sunk );
 
-    public Ship(ShipType type)
+    public Ships(ShipType type, IEnumerable<GridSpot> locations)
     {
         Type = type;
         this.locations = locations.ToList();
@@ -45,9 +45,9 @@ public class Ship
     public void Hit(GridSpot spot) => Locations.FirstOrDefault(s => s.Letter == spot.Letter && s.Number == spot.Number)?.MarkHit();
     public void MarkSunk()
     {
-        foreach (GridSpot spot in Locations)
+        for (int i = 0; i < Locations.Count; i++)
         {
-            spot.MarkSunk();
+            Locations[i].MarkSunk();
         }
     }
 }

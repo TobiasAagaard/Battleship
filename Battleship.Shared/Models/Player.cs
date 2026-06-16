@@ -7,9 +7,10 @@ namespace Battleship.Shared.Models
         public Board  FleetBoard { get; } = new();  
         public Board  ShotBoard  { get; } = new(); 
 
-        public bool IsAlive => FleetBoard.ShipLocations.Any(s => s.IsShip);
+        public bool IsAlive => FleetBoard.ShipLocations.Any(s => !s.IsSunk);
 
         public abstract string GetNextShot();
-        public abstract string GetShipPlacement(int shipNumber);
+        public abstract string GetShipPlacement(ShipType type);
+        public abstract Orientation GetShipOrientation(ShipType type);
     }
 }

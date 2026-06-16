@@ -20,8 +20,18 @@ public static class GameView
         Render(player.ShotBoard.ShotGrid.Values);
         Console.WriteLine();
     }
-    
-    public static void Render(IEnumerable<GridSpot> spots)
+
+    public static void DisplayFleetBoard(Player player)
+    {
+        Console.Clear();
+        Console.WriteLine($"{player.UsersName}'s Fleet");
+        Console.WriteLine($"Ships placed: {player.FleetBoard.ShipLocations.Count} / 5");
+        Console.WriteLine();
+        Render(player.FleetBoard.ShotGrid.Values, showShips: true);
+        Console.WriteLine();
+    }
+
+    public static void Render(IEnumerable<GridSpot> spots, bool showShips = false)
     {
         List<GridSpot> cachedSpots = spots.ToList();
 
@@ -48,8 +58,8 @@ public static class GameView
             foreach (int number in numbers)
             {
                 GridSpot spot = cachedSpots.First(spot => spot.Matches(letter, number));
-                
-                Console.Write(SymbolForGridSpot(spot) + "  ");
+
+                Console.Write(SymbolForGridSpot(spot, showShips) + "  ");
             }
             Console.WriteLine();
         }
@@ -61,21 +71,16 @@ public static class GameView
         Console.WriteLine();
     }
 
-    private static string SymbolForGridSpot(GridSpot spot)
+    private static string SymbolForGridSpot(GridSpot spot, bool showShips)
     {
-        if (GridSpot.GridSpotStatus.Hit == spot.Status)
+        return spot.Status switch
         {
-            return "X";
-        }
-        else if (GridSpot.GridSpotStatus.Miss == spot.Status)
-        {
-            return "O";
-        }
-        else
-        {
-            return "~";
-        }
-
+            GridSpot.GridSpotStatus.Hit  => "X",
+            GridSpot.GridSpotStatus.Miss => " ",
+            GridSpot.GridSpotStatus.Sunk => "#",
+            GridSpot.GridSpotStatus.Ship => showShips ? "S" : "~",
+            _                            => "~"
+        };
     }
 
     public static void IdentifyWinner(Player winner)
@@ -103,13 +108,37 @@ public static class GameView
         return Console.ReadLine() ?? "";
     }
 
-    public static string AskForShipLocation(int shipNumber)
+    public static string AskForShipLocation(ShipType type)
     {
-        Console.Write($"Where do you want to place ship number {shipNumber}: ");
+        int size = Ships.SizeOf(type);
+        Console.Write($"Where do you want to place your {type} (size {size})? Starting cell (e.g. A5): ");
         return Console.ReadLine() ?? "";
+    }
+
+    public static Orientation AskForShipOrientation(ShipType type)
+    {
+        while (true)
+        {
+            Console.Write($"Place {type} (H)orizontal or (V)ertical? ");
+            string input = (Console.ReadLine() ?? "").Trim().ToUpper();
+
+            if (input == "H" || input == "HORIZONTAL")
+            {
+                return Orientation.Horizontal;
+            }
+            if (input == "V" || input == "VERTICAL")
+            {
+                return Orientation.Vertical;
+            }
+            Console.WriteLine("Invalid orientation. Please enter H or V.");
+        }
     }
 
     public static void ShowPlayerInfoHeader(string title) => Console.WriteLine($"Type the player information for: {title}");
     public static void ShowInvalidShotMessage() => Console.WriteLine("Invalid shot. Please try again.");
-    public static void ShowInvalidLocationMessage() => Console.WriteLine("Invalid location. Please try again.");
+    public static void ShowInvalidLocationMessage()
+    {
+        Console.WriteLine("Invalid location. The ship doesn't fit there or overlaps another ship. Press Enter to retry.");
+        Console.ReadLine();
+    }
 }

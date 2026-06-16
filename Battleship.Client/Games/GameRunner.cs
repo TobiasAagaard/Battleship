@@ -48,17 +48,36 @@ public class GameRunner
 
     private static void PlaceShips(Player player)
     {
-        while (player.FleetBoard.ShipLocations.Count < 5)
+        BoardLogic logic = new();
+        ShipType[] fleet =
         {
-            string input = player.GetShipPlacement(player.FleetBoard.ShipLocations.Count + 1);
-            BoardLogic logic = new();
-            bool placed  = logic.TryPlaceShip(player.FleetBoard, input);
+            ShipType.Carrier,
+            ShipType.Battleship,
+            ShipType.Cruiser,
+            ShipType.Submarine,
+            ShipType.Destroyer
+        };
 
-            if (placed == false) 
+        foreach (ShipType type in fleet)
+        {
+            bool placed = false;
+            while (!placed)
             {
-                GameView.ShowInvalidLocationMessage();
+                GameView.DisplayFleetBoard(player);
+                string location = player.GetShipPlacement(type);
+                Orientation orientation = player.GetShipOrientation(type);
+                placed = logic.TryPlaceShip(player.FleetBoard, type, location, orientation);
+
+                if (!placed)
+                {
+                    GameView.ShowInvalidLocationMessage();
+                }
             }
         }
+
+        GameView.DisplayFleetBoard(player);
+        Console.WriteLine("All ships placed. Press Enter to continue.");
+        Console.ReadLine();
     }
 
     private static void TakeTurn(Player active, Player opponent)
