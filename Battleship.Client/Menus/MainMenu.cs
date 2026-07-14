@@ -1,5 +1,6 @@
 using Battleship.Client.Games;
 using Battleship.Client.Views;
+using Battleship.Client.Networking;
 
 namespace Battleship.Client.Menus;
 
@@ -10,7 +11,8 @@ public class MainMenu
         var mainMenu = new Dictionary<string, (string Label, Action Action)>
         {
             {"0", ("Exit", () => Environment.Exit(0))},
-            { "1", ("Play Game Offline", () => new GameRunner().Run())}
+            { "1", ("Play Game Offline", () => new GameRunner().Run())},
+            { "2", ("Test TCP Connection", () => new TcpGameClient().RunAsync().GetAwaiter().GetResult())}
         };
 
         while (true)
