@@ -10,8 +10,6 @@ A console Battleship game in C#, split into an offline client and a TCP server f
 ```mermaid
 flowchart LR
     CLI["CLI client"] -->|"TCP + JSON"| Server["Battleship server"]
-    Avalonia["Avalonia client"] -->|"TCP + JSON"| Server
-    React["React client"] -->|"WebSocket + JSON"| Server
     Server --> Sessions["Game sessions"]
     Sessions --> Logic["Shared game rules"]
 ```
