@@ -13,28 +13,49 @@ public class Program
 
         listener.Start();
 
-        Console.WriteLine($"Battleship server is running on port {port} and IP address {IPAddress.Any}...");
-        Console.WriteLine("Waiting for client...");
+        Console.WriteLine($"Server started on port {port}, and IP address {IPAddress.Any}.");
 
-        using TcpClient client = await listener.AcceptTcpClientAsync();
-
-        Console.WriteLine("Client connected!");
-
-        using NetworkStream stream = client.GetStream();
-        using StreamReader reader = new StreamReader(stream);
-        using StreamWriter writer = new(stream) { AutoFlush = true };
-
-        await writer.WriteLineAsync("Welcome to the Battleship server!");
-
-        while (await reader.ReadLineAsync() is { } message)
+        while (true)
         {
-            Console.WriteLine($"Client: {message}");
+            Console.WriteLine("Waiting for a client to connect...");
+            TcpClient client = await listener.AcceptTcpClientAsync();
 
-            await writer.WriteLineAsync($"Server received: {message}");
+            _ = HandleClientAsync(client);
         }
 
-        Console.WriteLine("Client disconnected.");
+        static async Task HandleClientAsync(TcpClient client)
+        {
+            string clientId = Guid.NewGuid().ToString();
 
-        listener.Stop();
+            string remoteEndPoint = client.Client.RemoteEndPoint?.ToString() ?? "Unknown";
+
+            Console.WriteLine($"Client connected: {clientId} from {remoteEndPoint}");
+
+            try 
+            {
+                using (client)
+                using (NetworkStream stream = client.GetStream())
+                using (StreamReader reader = new StreamReader(stream))
+                using (StreamWriter writer = new StreamWriter(stream) { AutoFlush = true })
+                {
+                    await writer.WriteLineAsync($"Your client ID is: {clientId}");
+
+                    while (await reader.ReadLineAsync() is { } message)
+                    {
+                        Console.WriteLine($"Received from {clientId}: {message}");
+
+                        await writer.WriteLineAsync($"Echo: {message}");
+                    }
+                }
+            }
+            catch (IOException ex)
+            {
+                Console.WriteLine($"Connection error with client {clientId}: {ex.Message}");
+            }
+            finally
+            {
+                Console.WriteLine($"Client disconnected: {clientId}");
+            }
+        }
     }
 }
