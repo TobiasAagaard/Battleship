@@ -7,6 +7,15 @@ A console Battleship game in C#, split into an offline client and a TCP server f
 - [Battleship.Server/](Battleship.Server/) — TCP server (`IPAddress.Any:50000`). Currently accepts one client and echoes messages.
 - [Battleship.Shared/](Battleship.Shared/) — Shared models (`Board`, `GridSpot`, `Player`, `Ships`) and `BoardLogic`.
 
+```mermaid
+flowchart LR
+    CLI["CLI client"] -->|"TCP + JSON"| Server["Battleship server"]
+    Avalonia["Avalonia client"] -->|"TCP + JSON"| Server
+    React["React client"] -->|"WebSocket + JSON"| Server
+    Server --> Sessions["Game sessions"]
+    Sessions --> Logic["Shared game rules"]
+```
+
 ## Run
 
 ```bash
