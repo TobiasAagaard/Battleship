@@ -33,7 +33,7 @@ public class GameRunner
     {
         Console.Clear();
         
-        Player player = new HumanPlayer();
+        Player player = new();
 
         GameView.ShowPlayerInfoHeader(title);
 
@@ -64,8 +64,8 @@ public class GameRunner
             while (!placed)
             {
                 GameView.DisplayFleetBoard(player);
-                string location = player.GetShipPlacement(type);
-                Orientation orientation = player.GetShipOrientation(type);
+                string location = GameView.AskForShipLocation(type);
+                Orientation orientation = GameView.AskForShipOrientation(type);
                 placed = logic.TryPlaceShip(player.FleetBoard, type, location, orientation);
 
                 if (!placed)
@@ -89,7 +89,7 @@ public class GameRunner
         bool validShot = false;
         while (!validShot)
         {
-            string shot = active.GetNextShot();
+            string shot = GameView.AskForShot();
            
 
             if (!Board.TryParseLocation(shot, out letter, out number))
