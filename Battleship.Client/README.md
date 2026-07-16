@@ -11,7 +11,7 @@ dotnet run --project Battleship.Client
 | # | Mode | What it does |
 |---|------|--------------|
 | 1 | Play Game Offline | Two players share one console. Each places a fleet, then they take turns firing. |
-| 2 | Test TCP Connection | Connects to the server on port 50000 and echoes messages. Not a playable match yet. |
+| 2 | Test TCP Connection |  Not a playable match yet. |
 | 0 | Exit | Quits. |
 
 ## What a match looks like
