@@ -11,14 +11,20 @@ public static class GameView
         Console.WriteLine();
     }
 
-    public static void DisplayShotBoard(Player player)
+    public static void DisplayGameBoards(Player player)
     {
         Console.Clear();
-        Console.WriteLine($"{player.UsersName}'s Shot Grid");
-        Console.WriteLine($"Number of shots taken: {player.ShotBoard.ShotCount}");
+
+        Console.WriteLine($"{player.UsersName}'s Turn");
         Console.WriteLine();
-        Render(player.ShotBoard.ShotGrid.Values);
+
+        Console.WriteLine("Opponent's Board:");
+        Render(player.ShotBoard.ShotGrid.Values, showShips: false);
+
         Console.WriteLine();
+
+        Console.WriteLine($"Your Fleet:");
+        Render(player.FleetBoard.ShotGrid.Values, showShips: true);
     }
 
     public static void DisplayFleetBoard(Player player)

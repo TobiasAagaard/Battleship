@@ -14,7 +14,7 @@ public class GameRunner
 
         while (winner == null)
         {
-            GameView.DisplayShotBoard(active);
+            GameView.DisplayGameBoards(active);
             TakeTurn(active, opponent);
 
             if (!opponent.IsAlive)
