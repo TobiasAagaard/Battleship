@@ -1,3 +1,4 @@
+using System.Text;
 using Battleship.Shared.Models;
 
 namespace Battleship.Client.Views;
@@ -14,17 +15,13 @@ public static class GameView
     public static void DisplayGameBoards(Player player)
     {
         Console.Clear();
-
         Console.WriteLine($"{player.UsersName}'s Turn");
         Console.WriteLine();
 
-        Console.WriteLine("Opponent's Board:");
-        Render(player.ShotBoard.ShotGrid.Values, showShips: false);
-
-        Console.WriteLine();
-
-        Console.WriteLine($"Your Fleet:");
-        Render(player.FleetBoard.ShotGrid.Values, showShips: true);
+        RenderBoardsSideBySide(
+            "Opponent's Board", player.ShotBoard.ShotGrid.Values, leftShowShips: false,
+            "Your Fleet", player.FleetBoard.ShotGrid.Values, rightShowShips: true
+        );
     }
 
     public static void DisplayFleetBoard(Player player)
@@ -37,13 +34,13 @@ public static class GameView
         Console.WriteLine();
     }
 
-    public static void Render(IEnumerable<GridSpot> spots, bool showShips = false)
+    public static List<String> BuildLines(IEnumerable<GridSpot> spots, bool showShips = false)
     {
         List<GridSpot> cachedSpots = spots.ToList();
 
         if (cachedSpots.Any() == false) 
         { 
-            Console.WriteLine("No grid to display."); return; 
+            return new List<string>{"No grid to display."};
         }
 
         HashSet<string> uniqueLetters = new();
@@ -58,23 +55,64 @@ public static class GameView
         List<string> letters = uniqueLetters.OrderBy(l => l).ToList();
         List<int> numbers = uniqueNumbers.OrderBy(n => n).ToList();
 
+        List<string> lines = new();
+
         foreach (string letter in letters)
         {
-            Console.Write(letter + "  ");
+            StringBuilder row = new();
+            row.Append(letter + " ");
             foreach (int number in numbers)
             {
-                GridSpot spot = cachedSpots.First(spot => spot.Matches(letter, number));
-
-                Console.Write(SymbolForGridSpot(spot, showShips) + "  ");
+                GridSpot? spot = cachedSpots.FirstOrDefault(spot => spot.Matches(letter, number)) ?? throw new InvalidOperationException($"No grid spot found for {letter}{number}");
+                row.Append(SymbolForGridSpot(spot, showShips) + " ");
             }
-            Console.WriteLine();
+            lines.Add(row.ToString());
         }
-        Console.Write("  ");
+        
+        StringBuilder footer = new();
+        footer.Append("  ");
         foreach (int number in numbers)
         {
-            Console.Write($" {number} ");
+            footer.Append($"{number} ");
         }
-        Console.WriteLine();
+        lines.Add(footer.ToString());
+        return lines;
+    }
+
+    public static void Render(IEnumerable<GridSpot> spots, bool showShips = false)
+    {
+        foreach (string line in BuildLines(spots, showShips))
+        {
+            Console.WriteLine(line);
+        }
+    }
+
+    private static void RenderBoardsSideBySide(
+        string leftTitle, IEnumerable<GridSpot> leftSpots, bool leftShowShips,
+        string rightTitle, IEnumerable<GridSpot> rightSpots, bool rightShowShips,
+        int gap = 6
+    )
+    {
+        List<string> left = BuildLines(leftSpots, leftShowShips);
+        List<string> right = BuildLines(rightSpots, rightShowShips);
+
+        int leftWidth = left.Max(line => line.Length);
+        leftWidth = Math.Max(leftWidth, leftTitle.Length);
+
+        string gapSpacer = new string(' ', gap);
+
+        Console.WriteLine(leftTitle.PadRight(leftWidth) + gapSpacer + rightTitle);
+        
+        int rows = Math.Max(left.Count, right.Count);
+        for (int i = 0; i < rows; i++)
+        {
+            string leftLine = i < left.Count ? left[i] : "";
+            string rightLine = i < right.Count ? right[i] : "";
+
+            Console.WriteLine(leftLine.PadRight(leftWidth) + gapSpacer + rightLine);
+        }
+
+
     }
 
     private static string SymbolForGridSpot(GridSpot spot, bool showShips)
